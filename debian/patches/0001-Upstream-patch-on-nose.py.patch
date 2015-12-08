@@ -1,0 +1,33 @@
+From fafef8779647d4e7d4fd3d4f9d6c190bf1dc79ab Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pierre-Elliott=20B=C3=A9cue?= <becue@crans.org>
+Date: Tue, 8 Dec 2015 14:48:09 +0100
+Subject: Upstream patch on nose.py
+
+---
+ src/mailman/testing/nose.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/mailman/testing/nose.py b/src/mailman/testing/nose.py
+index e7957e5..1e96e64 100644
+--- a/src/mailman/testing/nose.py
++++ b/src/mailman/testing/nose.py
+@@ -25,17 +25,17 @@ __all__ = [
+ import os
+ import re
+ import doctest
+-import mailman
+ import importlib
+ 
+ from mailman.testing.documentation import setup, teardown
+ from mailman.testing.layers import ConfigLayer, MockAndMonkeyLayer, SMTPLayer
+ from nose2.events import Plugin
++from pkg_resources import resource_filename
+ 
+ 
+ DOT = '.'
+ FLAGS = doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE | doctest.REPORT_NDIFF
+-TOPDIR = os.path.dirname(mailman.__file__)
++TOPDIR = os.path.dirname(resource_filename('mailman', '__init__.py'))
+ 
+ 
+ 
