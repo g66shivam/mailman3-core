@@ -1,0 +1,37 @@
+Source: mailman3-core
+Section: mail
+Priority: optional
+Maintainer: Pierre-Elliott Bécue <becue@crans.org>
+Build-Depends: debhelper (>= 9),
+               python3-alembic,
+               python3-dev (>= 3.4),
+               python3-falcon (>= 0.3rc1),
+               python3-flufl.bounce,
+               python3-flufl.i18n,
+               python3-flufl.lock,
+               python3-httplib2,
+               python3-lazr.config,
+               python3-lazr.smtptest,
+               python3-mock,
+               python3-nose2,
+               python3-passlib,
+               python3-setuptools,
+               python3-sqlalchemy,
+               python3-zope.component,
+               python3-zope.configuration,
+               python3-zope.event,
+               python3-zope.interface
+Standards-Version: 3.9.6
+Homepage: http://www.list.org/
+X-Python3-Version: >= 3.4
+Vcs-Browser: https://github.com/P-EB/mailman3-core
+Vcs-Git: https://github.com/P-EB/mailman3-core.git -b master
+
+Package: mailman3-core
+Architecture: all
+Depends: logrotate, ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}
+Description: Mailing list management system
+ This is GNU Mailman, a mailing list management system distributed under the
+ terms of the GNU General Public License (GPL) version 3 or later.  The name of
+ this software is spelled "Mailman" with a leading capital 'M' but with a lower
+ case second 'm'.  Any other spelling is incorrect.
