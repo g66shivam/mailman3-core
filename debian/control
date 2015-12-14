@@ -3,6 +3,7 @@ Section: mail
 Priority: optional
 Maintainer: Pierre-Elliott Bécue <becue@crans.org>
 Build-Depends: debhelper (>= 9),
+               dh-systemd,
                python3-alembic,
                python3-dev (>= 3.4),
                python3-falcon (>= 0.3rc1),

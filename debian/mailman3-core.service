@@ -6,7 +6,7 @@ ConditionPathExists=/etc/mailman3/mailman.cfg
 
 [Service]
 # Type is simple
-ExecStart=/usr/bin/mailman -c /etc/mailman3/mailman.cfg
+ExecStart=/usr/bin/mailman -c /etc/mailman3/mailman.cfg start
 ExecReload=/bin/kill -HUP $MAINPID
 # The main PID receives SIGTERM and by default, SIGKILL 90s later
 KillMode=process

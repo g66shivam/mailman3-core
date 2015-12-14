@@ -21,7 +21,7 @@ include /usr/share/dpkg/default.mk
 
 # main packaging script based on dh7 syntax
 %:
-	dh $@ --with python3 --buildsystem=pybuild
+	dh $@ --with python3,systemd --buildsystem=pybuild
 
 override_dh_auto_test:
 
@@ -36,8 +36,6 @@ override_dh_auto_install:
 	mv debian/mailman3-core/usr/bin/onebounce debian/mailman3-core/var/lib/mailman3/bin/
 	install -o list -g list -m 755 -d debian/mailman3-core/etc/mailman3/
 	install -o list -g list -m 644 debian/contrib/mailman.cfg debian/mailman3-core/etc/mailman3/mailman.cfg
-	install -o root -g root -d debian/mailman3-core/lib/systemd/system/
-	install -o list -g list -m 644 debian/contrib/mailman.service debian/mailman3-core/lib/systemd/system/mailman.service
 
 # dh_make generated override targets
 # This is example for Cmake (See https://bugs.debian.org/641051 )
