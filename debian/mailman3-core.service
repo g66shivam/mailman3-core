@@ -6,7 +6,7 @@ ConditionPathExists=/etc/mailman3/mailman.cfg
 
 [Service]
 # Type is simple
-ExecStart=/usr/bin/mailman -c /etc/mailman3/mailman.cfg start
+ExecStart=/usr/bin/mailman -C /etc/mailman3/mailman.cfg start
 ExecReload=/bin/kill -HUP $MAINPID
 # The main PID receives SIGTERM and by default, SIGKILL 90s later
 KillMode=process
@@ -14,6 +14,8 @@ PIDFile=/run/mailman3/master.pid
 SyslogIdentifier=mailman3-core
 Restart=on-failure
 RestartPreventExitStatus=SIGINT SIGTERM SIGKILL
+User=list
+Group=list
 
 [Install]
 WantedBy=multi-user.target
