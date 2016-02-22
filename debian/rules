@@ -36,6 +36,7 @@ override_dh_auto_install:
 	mv debian/mailman3-core/usr/bin/onebounce debian/mailman3-core/var/lib/mailman3/bin/
 	install -o list -g list -m 755 -d debian/mailman3-core/etc/mailman3/
 	install -o list -g list -m 644 debian/contrib/mailman.cfg debian/mailman3-core/etc/mailman3/mailman.cfg
+	install -o root -g root -m 644 debian/contrib/mailman3_tmpfiles.conf debian/mailman3-core/usr/lib/tmpfiles.d/mailman3.conf
 
 # dh_make generated override targets
 # This is example for Cmake (See https://bugs.debian.org/641051 )
