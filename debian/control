@@ -17,6 +17,7 @@ Build-Depends: debhelper (>= 9),
                python3-nose2,
                python3-passlib,
                python3-setuptools,
+               python3-sphinx,
                python3-sqlalchemy,
                python3-zope.component,
                python3-zope.configuration,
@@ -24,15 +25,29 @@ Build-Depends: debhelper (>= 9),
                python3-zope.interface
 Standards-Version: 3.9.6
 Homepage: http://www.list.org/
-X-Python3-Version: >= 3.4
+X-Python3-Version: < 3.5
 Vcs-Browser: https://github.com/P-EB/mailman3-core
 Vcs-Git: https://github.com/P-EB/mailman3-core.git -b master
 
 Package: mailman3-core
 Architecture: all
-Depends: logrotate, ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}
+Depends: logrotate,
+         python3-falcon (>= 0.3rc1),
+         ${shlibs:Depends},
+         ${misc:Depends},
+         ${python3:Depends}
 Description: Mailing list management system
  This is GNU Mailman, a mailing list management system distributed under the
  terms of the GNU General Public License (GPL) version 3 or later.  The name of
  this software is spelled "Mailman" with a leading capital 'M' but with a lower
  case second 'm'.  Any other spelling is incorrect.
+
+Package: mailman3-core-doc
+Section: doc
+Architecture: all
+Depends: ${sphinxdoc:Depends}, ${misc:Depends}
+Description: Mailing list management system documentation
+ This package contains the full compiled documentation of Mailman3
+ server. It is built using sphinx and voluntarily separated from
+ mailman3-core lib/binaries as it is not required to have a properly
+ working server.
