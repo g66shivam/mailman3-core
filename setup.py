@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -84,6 +84,18 @@ case second `m'.  Any other spelling is incorrect.""",
     license         = 'GPLv3',
     url             = 'http://www.list.org',
     keywords        = 'email',
+    classifiers = [
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: '
+            'GNU General Public License v3 or later (GPLv3+)',
+        'Operating System :: POSIX',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Topic :: Communications :: Email :: Mailing List Servers',
+        'Topic :: Communications :: Usenet News',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+        ],
     packages        = find_packages('src'),
     package_dir     = {'': 'src'},
     include_package_data = True,
@@ -99,7 +111,6 @@ case second `m'.  Any other spelling is incorrect.""",
         'httplib2',
         'lazr.config',
         'lazr.smtptest',
-        'mock',
         'nose2',
         'passlib',
         'sqlalchemy',
@@ -108,5 +119,4 @@ case second `m'.  Any other spelling is incorrect.""",
         'zope.event',
         'zope.interface',
         ],
-    test_suite = 'nose2.collector.collector',
     )

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -65,6 +65,7 @@ class IndividualRequest(_ModerationBase):
         # the pending table.
         try:
             resource = self._resource_as_dict(self._token)
+            assert resource is not None, resource
         except LookupError:
             not_found(response)
             return

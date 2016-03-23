@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -20,6 +20,7 @@
 __all__ = [
     'BadRequest',
     'ChildError',
+    'CollectionMixin',
     'GetterSetter',
     'NotFound',
     'bad_request',
@@ -109,32 +110,8 @@ def etag(resource):
     hashfood = pformat(resource).encode('raw-unicode-escape')
     etag = hashlib.sha1(hashfood).hexdigest()
     resource['http_etag'] = '"{0}"'.format(etag)
-    return json.dumps(resource, cls=ExtendedEncoder)
-
-
-def paginate(method):
-    """Method decorator to paginate through collection result lists.
-
-    Use this to return only a slice of a collection, specified in the request
-    itself.  The request should use query parameters `count` and `page` to
-    specify the slice they want.  The slice will start at index
-    ``(page - 1) * count`` and end (exclusive) at ``(page * count)``.
-
-    Decorated methods must take ``self`` and ``request`` as the first two
-    arguments.
-    """
-    def wrapper(self, request, *args, **kwargs):
-        # Allow falcon's HTTPBadRequest exceptions to percolate up.  They'll
-        # get turned into HTTP 400 errors.
-        count = request.get_param_as_int('count', min=0)
-        page = request.get_param_as_int('page', min=1)
-        result = method(self, request, *args, **kwargs)
-        if count is None and page is None:
-            return result
-        list_start = (page - 1) * count
-        list_end = page * count
-        return result[list_start:list_end]
-    return wrapper
+    return json.dumps(resource, cls=ExtendedEncoder,
+                      sort_keys=as_boolean(config.devmode.enabled))
 
 
 
@@ -155,7 +132,9 @@ class CollectionMixin:
 
     def _resource_as_json(self, resource):
         """Return the JSON formatted representation of the resource."""
-        return etag(self._resource_as_dict(resource))
+        resource = self._resource_as_dict(resource)
+        assert resource is not None, resource
+        return etag(resource)
 
     def _get_collection(self, request):
         """Return the collection as a concrete list.
@@ -168,22 +147,40 @@ class CollectionMixin:
         """
         raise NotImplementedError
 
+    def _paginate(self, request, collection):
+        """Method to paginate through collection result lists.
+
+        Use this to return only a slice of a collection, specified in
+        the request itself.  The request should use query parameters
+        `count` and `page` to specify the slice they want.  The slice
+        will start at index ``(page - 1) * count`` and end (exclusive)
+        at ``(page * count)``.
+        """
+        # Allow falcon's HTTPBadRequest exceptions to percolate up.  They'll
+        # get turned into HTTP 400 errors.
+        count = request.get_param_as_int('count', min=0)
+        page = request.get_param_as_int('page', min=1)
+        total_size = len(collection)
+        if count is None and page is None:
+            return 0, total_size, collection
+        list_start = (page - 1) * count
+        list_end = page * count
+        return list_start, total_size, collection[list_start:list_end]
+
     def _make_collection(self, request):
         """Provide the collection to the REST layer."""
-        collection = self._get_collection(request)
-        if len(collection) == 0:
-            return dict(start=0, total_size=0)
-        else:
+        start, total_size, collection = self._paginate(
+            request, self._get_collection(request))
+        result = dict(start=start, total_size=total_size)
+        if len(collection) != 0:
             entries = [self._resource_as_dict(resource)
                        for resource in collection]
+            assert None not in entries, entries
             # Tag the resources but use the dictionaries.
             [etag(resource) for resource in entries]
             # Create the collection resource
-            return dict(
-                start=0,
-                total_size=len(collection),
-                entries=entries,
-                )
+            result['entries'] = entries
+        return result
 
 
 

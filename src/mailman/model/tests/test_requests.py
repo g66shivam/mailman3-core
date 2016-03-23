@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -74,3 +74,10 @@ Something else.
         with self.assertRaises(KeyError) as cm:
             self._requests_db.delete_request(801)
         self.assertEqual(cm.exception.args[0], 801)
+
+    def test_only_return_this_lists_requests(self):
+        # Issue #161: get_requests() returns requests that are not specific to
+        # the mailing list in question.
+        request_id = hold_message(self._mlist, self._msg)
+        bee = create_list('bee@example.com')
+        self.assertIsNone(IListRequests(bee).get_request(request_id))

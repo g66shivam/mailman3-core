@@ -1,4 +1,4 @@
-# Copyright (C) 2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -29,7 +29,7 @@ from mailman.app.inject import inject_text
 from mailman.interfaces.listmanager import IListManager
 from mailman.rest.helpers import (
     CollectionMixin, bad_request, created, etag, no_content, not_found, okay,
-    paginate, path_to)
+    path_to)
 from mailman.rest.validator import Validator
 from zope.component import getUtility
 
@@ -50,7 +50,6 @@ class _QueuesBase(CollectionMixin):
             self_link=path_to('queues/{}'.format(name)),
             )
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return sorted(config.switchboards)

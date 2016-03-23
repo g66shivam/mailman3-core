@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -35,8 +35,7 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.addresses import UserAddresses
 from mailman.rest.helpers import (
     BadRequest, CollectionMixin, GetterSetter, NotFound, bad_request, child,
-    conflict, created, etag, forbidden, no_content, not_found, okay, paginate,
-    path_to)
+    conflict, created, etag, forbidden, no_content, not_found, okay, path_to)
 from mailman.rest.preferences import Preferences
 from mailman.rest.validator import (
     PatchValidator, Validator, list_of_strings_validator)
@@ -82,7 +81,7 @@ ATTRIBUTES = dict(
 CREATION_FIELDS = dict(
     display_name=str,
     email=str,
-    is_server_owner=bool,
+    is_server_owner=as_boolean,
     password=str,
     _optional=('display_name', 'password', 'is_server_owner'),
     )
@@ -137,7 +136,6 @@ class _UserBase(CollectionMixin):
             resource['display_name'] = user.display_name
         return resource
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(getUtility(IUserManager).users)
@@ -212,12 +210,6 @@ class AUser(_UserBase):
         for member in self._user.memberships.members:
             member.unsubscribe()
         user_manager = getUtility(IUserManager)
-        # SQLAlchemy is susceptable to delete-elements-while-iterating bugs so
-        # first figure out all the addresses we want to delete, then in a
-        # separate pass, delete those addresses.  (See LP: #1419519)
-        delete = list(self._user.addresses)
-        for address in delete:
-            user_manager.delete_address(address)
         user_manager.delete_user(self._user)
         no_content(response)
 
@@ -448,7 +440,6 @@ class OwnersForDomain(_UserBase):
             self._domain.remove_owner(email)
         return no_content(response)
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(self._domain.owners)

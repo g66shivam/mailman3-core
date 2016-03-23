@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -112,7 +112,7 @@ class ListRequests:
     @dbconnection
     def get_request(self, store, request_id, request_type=None):
         result = store.query(_Request).get(request_id)
-        if result is None:
+        if result is None or result.mailing_list != self.mailing_list:
             return None
         if request_type is not None and result.request_type != request_type:
             return None

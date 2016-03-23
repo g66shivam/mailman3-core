@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -44,15 +44,27 @@ from zope.component import getUtility
 from zope.event import notify
 from zope.interface import implementer
 
+SEMISPACE = '; '
+SPACE = ' '
+NL = '\n'
+
 
 log = logging.getLogger('mailman.vette')
-SEMISPACE = '; '
 
 
 
 @implementer(IPendable)
 class HeldMessagePendable(dict):
     PEND_KEY = 'held message'
+
+
+
+def _compose_reasons(msgdata, column=66):
+    # Rules can add reasons to the metadata.
+    reasons = msgdata.get('moderation_reasons', [_('N/A')])
+    return NL.join(
+        [(SPACE * 4) + wrap(_(reason), column=column)
+         for reason in reasons])
 
 
 
@@ -153,14 +165,17 @@ class HoldChain(TerminalChainBase):
         if original_subject is None:
             original_subject = _('(no subject)')
         else:
-            original_subject = oneline(original_subject, in_unicode=True)
+            # This must be encoded to the mailing list's perferred charset,
+            # ignoring incompatible characters, otherwise when creating the
+            # notification messages, we could get a Unicode error.
+            oneline_subject = oneline(original_subject, in_unicode=True)
+            bytes_subject = oneline_subject.encode(charset, 'replace')
+            original_subject = bytes_subject.decode(charset)
         substitutions = dict(
             listname    = mlist.fqdn_listname,
             subject     = original_subject,
             sender      = msg.sender,
-            reason      = 'N/A', #reason,
-            confirmurl  = '{0}/{1}'.format(mlist.script_url('confirm'), token),
-            admindb_url = mlist.script_url('admindb'),
+            reasons     = _compose_reasons(msgdata),
             )
         # At this point the message is held, but now we have to craft at least
         # two responses.  The first will go to the original author of the
@@ -205,7 +220,7 @@ class HoldChain(TerminalChainBase):
                 charset = language.charset
                 # We need to regenerate or re-translate a few values in the
                 # substitution dictionary.
-                #d['reason'] = _(reason) # XXX reason
+                substitutions['reasons'] = _compose_reasons(msgdata, 55)
                 substitutions['subject'] = original_subject
                 # craft the admin notification message and deliver it
                 subject = _(
@@ -235,10 +250,11 @@ also appear in the first line of the body of the reply.""")),
                 nmsg.attach(MIMEMessage(msg))
                 nmsg.attach(MIMEMessage(dmsg))
                 nmsg.send(mlist, **dict(tomoderators=True))
-        # Log the held message
-        # XXX reason
-        reason = 'n/a'
-        log.info('HOLD: %s post from %s held, message-id=%s: %s',
-                 mlist.fqdn_listname, msg.sender,
-                 msg.get('message-id', 'n/a'), reason)
+        # Log the held message.  Log messages are not translated, so recast
+        # the reasons in the English.
+        with _.using('en'):
+            reasons = msgdata.get('moderation_reasons', ['N/A'])
+            log.info('HOLD: %s post from %s held, message-id=%s: %s',
+                     mlist.fqdn_listname, msg.sender,
+                     msg.get('message-id', 'n/a'), SEMISPACE.join(reasons))
         notify(HoldEvent(mlist, msg, msgdata, self))

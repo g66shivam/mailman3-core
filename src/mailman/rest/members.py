@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2010-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -30,7 +30,7 @@ from mailman.interfaces.address import IAddress, InvalidEmailAddressError
 from mailman.interfaces.listmanager import IListManager
 from mailman.interfaces.member import (
     AlreadySubscribedError, DeliveryMode, MemberRole, MembershipError,
-    MembershipIsBannedError, NotAMemberError)
+    MembershipIsBannedError, MissingPreferredAddressError, NotAMemberError)
 from mailman.interfaces.registrar import IRegistrar
 from mailman.interfaces.subscriptions import (
     ISubscriptionService, RequestRecord, TokenOwner)
@@ -38,7 +38,7 @@ from mailman.interfaces.user import IUser, UnverifiedAddressError
 from mailman.interfaces.usermanager import IUserManager
 from mailman.rest.helpers import (
     CollectionMixin, NotFound, accepted, bad_request, child, conflict,
-    created, etag, no_content, not_found, okay, paginate, path_to)
+    created, etag, no_content, not_found, okay, path_to)
 from mailman.rest.preferences import Preferences, ReadOnlyPreferences
 from mailman.rest.validator import (
     Validator, enum_validator, subscriber_validator)
@@ -76,7 +76,6 @@ class _MemberBase(CollectionMixin):
             response['user'] = path_to('users/{}'.format(user.user_id.int))
         return response
 
-    @paginate
     def _get_collection(self, request):
         """See `CollectionMixin`."""
         return list(getUtility(ISubscriptionService))
@@ -269,6 +268,9 @@ class AllMembers(_MemberBase):
                     pre_approved=pre_approved)
             except AlreadySubscribedError:
                 conflict(response, b'Member already subscribed')
+                return
+            except MissingPreferredAddressError:
+                bad_request(response, b'User has no preferred address')
                 return
             if token is None:
                 assert token_owner is TokenOwner.no_one, token_owner

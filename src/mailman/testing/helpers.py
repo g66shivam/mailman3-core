@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -40,7 +40,6 @@ __all__ = [
 
 import os
 import json
-import mock
 import time
 import uuid
 import errno
@@ -67,6 +66,7 @@ from mailman.interfaces.styles import IStyleManager
 from mailman.interfaces.usermanager import IUserManager
 from mailman.runners.digest import DigestRunner
 from mailman.utilities.mailbox import Mailbox
+from unittest import mock
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from zope import event

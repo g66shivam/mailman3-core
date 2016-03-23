@@ -1,4 +1,4 @@
-# Copyright (C) 2013-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2013-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,13 +24,13 @@ __all__ = [
 
 import os
 import sys
-import mock
 import tempfile
 import unittest
 
 from io import StringIO
 from mailman.commands.cli_conf import Conf
 from mailman.testing.layers import ConfigLayer
+from unittest import mock
 
 
 

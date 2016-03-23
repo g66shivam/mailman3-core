@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2006-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -135,7 +135,7 @@ class Configuration:
     def _expand_paths(self):
         """Expand all configuration paths."""
         # Set up directories.
-        bin_dir = os.path.abspath(os.path.dirname(sys.executable))
+        default_bin_dir = os.path.abspath(os.path.dirname(sys.executable))
         # Now that we've loaded all the configuration files we're going to
         # load, set up some useful directories based on the settings in the
         # configuration file.
@@ -156,7 +156,7 @@ class Configuration:
         var_dir = os.environ.get('MAILMAN_VAR_DIR', category.var_dir)
         substitutions = dict(
             cwd                     = os.getcwd(),
-            argv                    = bin_dir,
+            argv                    = default_bin_dir,
             # Directories.
             bin_dir                 = category.bin_dir,
             data_dir                = category.data_dir,

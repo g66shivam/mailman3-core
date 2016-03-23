@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2008-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -53,8 +53,10 @@ class IArchiver(Interface):
     def list_url(mlist):
         """Return the url to the top of the list's archive.
 
+        If the archiver is not web-accessible, return None.
+
         :param mlist: The IMailingList object.
-        :returns: The url string.
+        :returns: The url string or None.
         """
 
     def permalink(mlist, msg):
@@ -62,6 +64,8 @@ class IArchiver(Interface):
 
         This url points directly to the message in the archive.  This method
         only calculates the url, it does not actually archive the message.
+
+        If the archiver is not web-accessible, return None.
 
         :param mlist: The IMailingList object.
         :param msg: The message object.

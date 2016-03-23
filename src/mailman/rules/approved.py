@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -58,6 +58,8 @@ class Approved:
 
     def check(self, mlist, msg, msgdata):
         """See `IRule`."""
+        if mlist.moderator_password is None:
+            return False
         # See if the message has an Approved or Approve header with a valid
         # moderator password.  Also look at the first non-whitespace line in
         # the file to see if it looks like an Approved header.

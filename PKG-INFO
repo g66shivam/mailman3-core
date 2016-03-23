@@ -1,6 +1,6 @@
-Metadata-Version: 1.0
+Metadata-Version: 1.1
 Name: mailman
-Version: 3.0.0
+Version: 3.0.2
 Summary: Mailman -- the GNU mailing list manager
 Home-page: http://www.list.org
 Author: The Mailman Developers
@@ -12,3 +12,12 @@ Description: This is GNU Mailman, a mailing list management system distributed u
         case second `m'.  Any other spelling is incorrect.
 Keywords: email
 Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Topic :: Communications :: Email :: Mailing List Servers
+Classifier: Topic :: Communications :: Usenet News
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Application

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -112,8 +112,9 @@ class AbstractRoster:
         members_u = store.query(Member).filter(
             Member.list_id == self._mlist.list_id,
             Member.role == self.role,
-            Address.email==email,
-            Member.user_id == User.id)
+            Address.email == email,
+            Member.user_id == User.id,
+            User._preferred_address_id == Address.id)
         return members_a.union(members_u).all()
 
     def get_member(self, email):
@@ -286,9 +287,11 @@ class Memberships:
     @dbconnection
     def _query(self, store):
         results = store.query(Member).filter(
-            or_(Member.user_id == self._user.id,
-            and_(Address.user_id == self._user.id,
-                 Member.address_id == Address.id)))
+            Member.user_id == self._user.id
+            ).union(
+                store.query(Member).join(Address).filter(
+                    Address.user_id == self._user.id)
+                )
         return results.distinct()
 
     @property

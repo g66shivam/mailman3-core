@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -23,7 +23,6 @@ __all__ = [
     ]
 
 
-import mock
 import socket
 import nntplib
 import unittest
@@ -36,6 +35,7 @@ from mailman.testing.helpers import (
     LogFileMark, configuration, get_queue_messages, make_testable_runner,
     specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+from unittest import mock
 
 
 

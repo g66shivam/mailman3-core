@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -252,6 +252,20 @@ class TestMembership(unittest.TestCase):
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/members/1/all')
         self.assertEqual(cm.exception.code, 404)
+
+    def test_subscribe_user_without_preferred_address(self):
+        with transaction():
+            getUtility(IUserManager).create_user('anne@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/members', {
+                'list_id': 'test.example.com',
+                'subscriber': 1,
+                'pre_verified': True,
+                'pre_confirmed': True,
+                'pre_approved': True,
+                })
+        self.assertEqual(cm.exception.code, 400)
+        self.assertEqual(cm.exception.reason, b'User has no preferred address')
 
 
 
