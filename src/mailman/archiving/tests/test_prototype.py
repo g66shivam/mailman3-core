@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -47,7 +47,7 @@ class TestPrototypeArchiver(unittest.TestCase):
     layer = ConfigLayer
 
     def setUp(self):
-        # Create a fake mailing list and message object
+        # Create a fake mailing list and message object.
         self._msg = mfs("""\
 To: test@example.com
 From: anne@example.com

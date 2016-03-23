@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -137,6 +137,12 @@ A message body.
         self._msg['X-Approve'] = 'not the password'
         self._rule.check(self._mlist, self._msg, {})
         self.assertEqual(self._msg['x-approve'], None)
+
+    def test_no_list_password(self):
+        self._mlist.moderator_password = None
+        self._msg['Approved'] = 'super secret'
+        result = self._rule.check(self._mlist, self._msg, {})
+        self.assertFalse(result)
 
 
 

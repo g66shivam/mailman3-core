@@ -6,7 +6,6 @@ flufl.lock
 httplib2
 lazr.config
 lazr.smtptest
-mock
 nose2
 passlib
 sqlalchemy

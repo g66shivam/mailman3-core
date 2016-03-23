@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -31,7 +31,6 @@ from mailman.interfaces.usermanager import IUserManager
 from mailman.model.member import Member
 from mailman.testing.layers import ConfigLayer
 from mailman.utilities.datetime import now
-
 from zope.component import getUtility
 
 

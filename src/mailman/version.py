@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 1998-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -18,7 +18,7 @@
 """Mailman version strings."""
 
 # Mailman version.
-VERSION = '3.0.0'
+VERSION = '3.0.2'
 CODENAME = "Show Don't Tell"
 
 # And as a hex number in the manner of PY_VERSION_HEX.
@@ -31,7 +31,7 @@ FINAL = 0xf
 
 MAJOR_REV = 3
 MINOR_REV = 0
-MICRO_REV = 0
+MICRO_REV = 2
 REL_LEVEL = FINAL
 # At most 15 beta releases!
 REL_SERIAL = 0

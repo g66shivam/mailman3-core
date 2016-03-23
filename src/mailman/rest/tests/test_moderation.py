@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -69,7 +69,7 @@ Something else.
         self.assertEqual(cm.exception.code, 400)
 
     def test_missing_held_message_request_id(self):
-        # Bad request when the request_id is not in the database.
+        # Not found when the request_id is not in the database.
         with self.assertRaises(HTTPError) as cm:
             call_api('http://localhost:9001/3.0/lists/ant@example.com/held/99')
         self.assertEqual(cm.exception.code, 404)
@@ -95,6 +95,29 @@ Something else.
         # Now it's gone.
         with self.assertRaises(HTTPError) as cm:
             call_api(url, dict(action='discard'))
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_cant_get_other_lists_holds(self):
+        # Issue #161: It was possible to moderate a held message for another
+        # list via the REST API.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+            create_list('bee@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bee.example.com'
+                     '/held/{}'.format(held_id))
+        self.assertEqual(cm.exception.code, 404)
+
+    def test_cant_moderate_other_lists_holds(self):
+        # Issue #161: It was possible to moderate a held message for another
+        # list via the REST API.
+        with transaction():
+            held_id = hold_message(self._mlist, self._msg)
+            create_list('bee@example.com')
+        with self.assertRaises(HTTPError) as cm:
+            call_api('http://localhost:9001/3.0/lists/bee.example.com'
+                     '/held/{}'.format(held_id),
+                     dict(action='discard'))
         self.assertEqual(cm.exception.code, 404)
 
 

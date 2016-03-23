@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2007-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -104,4 +104,4 @@ def handle_ConfirmationNeededEvent(event):
             event.mlist.preferred_language.code))
     text = _(template)
     msg = UserNotification(email_address, confirm_address, subject, text)
-    msg.send(event.mlist)
+    msg.send(event.mlist, add_precedence=False)

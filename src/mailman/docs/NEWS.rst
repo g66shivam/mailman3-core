@@ -2,10 +2,90 @@
 Mailman - The GNU Mailing List Management System
 ================================================
 
-Copyright (C) 1998-2015 by the Free Software Foundation, Inc.
+Copyright (C) 1998-2016 by the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 Here is a history of user visible changes to Mailman.
+
+
+3.0.2 -- "Show Don't Tell"
+==========================
+(2016-02-08)
+
+Bugs
+----
+ * Fix IntegrityErrors raised under PostreSQL when deleting users and
+   addresses. Given by Aurélien Bompard.
+ * Fix traceback in approved handler when the moderator password is None.
+   Given by Aurélien Bompard.
+ * Allow mailing lists to have localhost names with a suffix matching the
+   subcommand extensions.  Given by Aurélien Bompard.  (Closes: #168)
+ * Don't traceback if a nonexistent message-id is deleted from the message
+   store.  Given by Aurélien Bompard, tweaked by Barry Warsaw.  (Closes: #167)
+ * Fix membership query when multiple users are subscribed to a mailing list.
+   Reported by Darrell Kresge.  (Closes: #190)
+ * Prevent moderation of messages held for a different list.  (Closes: #161)
+
+Interfaces
+----------
+ * ``IMessageStore.delete_message()`` no longer raises a ``LookupError`` when
+   you attempt to delete a nonexistent message from the message store.
+
+REST
+----
+ * When ``[devmode]enabled`` is set, the JSON output is sorted.  Given by
+   Aurélien Bompard.
+ * Fixed a number of corner cases for the return codes when PUTing or PATCHing
+   list configuration variables.  (Closes: #182)
+ * Don't crash the REST server when trying to subscribe a user without a
+   preferred address.  (Closes: #185)
+
+
+3.0.1 -- "Show Don't Tell"
+==========================
+(2015-11-13)
+
+Bugs
+----
+ * When the mailing list's `admin_notify_mchanges` is True, the list owners
+   now get the subscription notification.  (Closes: #1)
+ * Fix the traceback that occurred when trying to convert a `text/html`
+   subpart to plaintext via the `mimedel` handler.  Now, a configuration
+   variable `[mailman]html_to_plain_text_command` in the `mailman.cfg` file
+   defines the command to use.  It defaults to `lynx`.  (Closes: #109)
+ * Confirmation messages should not be `Precedence: bulk`.  (Closes #75)
+ * The ``prototype`` archiver is not web accessible so it does not have a
+   ``list_url`` or permalink.  Given by Aurélien Bompard.
+ * The REST API incorrectly parsed `is_server_owner` values when given
+   explicitly in the POST that creates a user.  (Closes #136)
+ * By POSTing to a user resource with an existing unlinked address, you can
+   link the address to the user.  Given by Abhilash Raj.
+ * Fix constraint violations on mailing list deletes affecting PostgreSQL.
+   Given by Abhilash Raj.  (Closes #115)
+ * `mailman` command with no subcommand now prints the help text.  Given by
+   Abhilash Raj.  (Closes #137)
+ * The MHonArc archiver must set stdin=PIPE when calling the subprocess.  Given
+   by Walter Doekes.
+ * For now, treat `DeliveryMode.summary_digests` the same as `.mime_digests`.
+   (Closes #141).  Also, don't enqueue a particular digest if there are no
+   recipients for that digest.
+ * For Python versions earlier than 3.5, use a compatibility layer for a
+   backported smtpd module which can accept non-UTF-8 data.  (Closes #140)
+ * Bulk emails are now decorated with headers and footers.  Given by Aurélien
+   Bompard.  (Closes #145)
+ * Core no longer depends on the standalone `mock` module.  (Closes: #146)
+ * Fix the logging of moderation reasons.  Given by Aurélien Bompard.  Also,
+   update the postauth.txt and postheld.txt templates to not include the bogus
+   URLs, and to include the translated moderation reasons.
+ * Collapse multiple ``Re:`` in Subject headers.  Given by Mark Sapiro.
+   (Closes: #147)
+ * Added Trove classifiers to setup.py.  (Closes: #152)
+ * Fix the processing of subscription confirmation messages when the mailing
+   list is set to confirm-then-moderate.  (Closes #114)
+ * Fix pagination values `start` and `total_size` in the REST API.  Given by
+   Aurélien Bompard.  (Closes: #154)
+ * Fix ``UnicodeEncodeError`` in the hold chain when sending the authorization
+   email to the mailing list moderators.  (Closes: #144)
 
 
 3.0.0 -- "Show Don't Tell"

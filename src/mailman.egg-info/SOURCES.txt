@@ -67,6 +67,8 @@ src/mailman/archiving/prototype.py
 src/mailman/archiving/docs/__init__.py
 src/mailman/archiving/docs/common.rst
 src/mailman/archiving/tests/__init__.py
+src/mailman/archiving/tests/fake_mhonarc.py
+src/mailman/archiving/tests/test_mhonarc.py
 src/mailman/archiving/tests/test_prototype.py
 src/mailman/bin/__init__.py
 src/mailman/bin/mailman.py
@@ -75,6 +77,7 @@ src/mailman/bin/onebounce.py
 src/mailman/bin/runner.py
 src/mailman/bin/docs/master.rst
 src/mailman/bin/tests/__init__.py
+src/mailman/bin/tests/test_mailman.py
 src/mailman/bin/tests/test_master.py
 src/mailman/chains/__init__.py
 src/mailman/chains/accept.py
@@ -89,6 +92,7 @@ src/mailman/chains/reject.py
 src/mailman/chains/docs/__init__.py
 src/mailman/chains/docs/moderation.rst
 src/mailman/chains/tests/__init__.py
+src/mailman/chains/tests/issue144.eml
 src/mailman/chains/tests/test_base.py
 src/mailman/chains/tests/test_headers.py
 src/mailman/chains/tests/test_hold.py
@@ -141,6 +145,8 @@ src/mailman/commands/tests/test_create.py
 src/mailman/commands/tests/test_help.py
 src/mailman/commands/tests/test_import.py
 src/mailman/commands/tests/test_lists.py
+src/mailman/compat/__init__.py
+src/mailman/compat/smtpd.py
 src/mailman/config/__init__.py
 src/mailman/config/alembic.cfg
 src/mailman/config/config.py
@@ -257,6 +263,7 @@ src/mailman/handlers/tests/test_file_recips.py
 src/mailman/handlers/tests/test_filter.py
 src/mailman/handlers/tests/test_mimedel.py
 src/mailman/handlers/tests/test_recipients.py
+src/mailman/handlers/tests/test_rfc_2369.py
 src/mailman/handlers/tests/test_subject_prefix.py
 src/mailman/handlers/tests/test_to_digest.py
 src/mailman/interfaces/__init__.py

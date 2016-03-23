@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -489,6 +489,8 @@ approval:
         self.assertEqual(message['Subject'], 'confirm {}'.format(token))
         self.assertEqual(
             message['From'], 'test-confirm+{}@example.com'.format(token))
+        # The confirmation message is not `Precedence: bulk`.
+        self.assertIsNone(message['precedence'])
 
     def test_send_confirmation_pre_confirmed(self):
         # A confirmation message gets sent when the address is not verified

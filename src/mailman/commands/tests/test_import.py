@@ -1,4 +1,4 @@
-# Copyright (C) 2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2015-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -27,8 +27,8 @@ import unittest
 from mailman.app.lifecycle import create_list
 from mailman.commands.cli_import import Import21
 from mailman.testing.layers import ConfigLayer
-from mock import patch
 from pkg_resources import resource_filename
+from unittest.mock import patch
 
 
 

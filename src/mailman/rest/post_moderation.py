@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -138,7 +138,9 @@ class HeldMessages(_HeldMessageBase, CollectionMixin):
 
     def _resource_as_dict(self, request):
         """See `CollectionMixin`."""
-        return self._make_resource(request.id)
+        resource = self._make_resource(request.id)
+        assert resource is not None, resource
+        return resource
 
     def _get_collection(self, request):
         requests = IListRequests(self._mlist)

@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2015 by the Free Software Foundation, Inc.
+# Copyright (C) 2011-2016 by the Free Software Foundation, Inc.
 #
 # This file is part of GNU Mailman.
 #
@@ -24,12 +24,17 @@ __all__ = [
 
 import unittest
 
+from email import message_from_bytes as mfb
 from mailman.app.lifecycle import create_list
 from mailman.chains.hold import autorespond_to_sender
+from mailman.core.chains import process as process_chain
 from mailman.interfaces.autorespond import IAutoResponseSet, Response
 from mailman.interfaces.usermanager import IUserManager
-from mailman.testing.helpers import configuration, get_queue_messages
+from mailman.testing.helpers import (
+    LogFileMark, configuration, get_queue_messages,
+    specialized_message_from_string as mfs)
 from mailman.testing.layers import ConfigLayer
+from pkg_resources import resource_filename
 from zope.component import getUtility
 
 
@@ -86,3 +91,76 @@ further responses today.  Please try again tomorrow.
 
 If you believe this message is in error, or if you have any questions,
 please contact the list owner at test-owner@example.com.""")
+
+
+
+class TestHoldChain(unittest.TestCase):
+    """Test the hold chain code."""
+
+    layer = ConfigLayer
+
+    def setUp(self):
+        self._mlist = create_list('test@example.com')
+
+    def test_hold_chain(self):
+        msg = mfs("""\
+From: anne@example.com
+To: test@example.com
+Subject: A message
+Message-ID: <ant>
+MIME-Version: 1.0
+
+A message body.
+""")
+        msgdata = dict(moderation_reasons=[
+            'TEST-REASON-1',
+            'TEST-REASON-2',
+            ])
+        logfile = LogFileMark('mailman.vette')
+        process_chain(self._mlist, msg, msgdata, start_chain='hold')
+        messages = get_queue_messages('virgin')
+        self.assertEqual(len(messages), 2)
+        payloads = {}
+        for item in messages:
+            if item.msg['to'] == 'test-owner@example.com':
+                part = item.msg.get_payload(0)
+                payloads['owner'] = part.get_payload().splitlines()
+            elif item.msg['To'] == 'anne@example.com':
+                payloads['sender'] = item.msg.get_payload().splitlines()
+            else:
+                self.fail('Unexpected message: %s' % item.msg)
+        self.assertIn('    TEST-REASON-1', payloads['owner'])
+        self.assertIn('    TEST-REASON-2', payloads['owner'])
+        self.assertIn('    TEST-REASON-1', payloads['sender'])
+        self.assertIn('    TEST-REASON-2', payloads['sender'])
+        logged = logfile.read()
+        self.assertIn('TEST-REASON-1', logged)
+        self.assertIn('TEST-REASON-2', logged)
+
+    def test_hold_chain_charset(self):
+        # Issue #144 - UnicodeEncodeError in the hold chain.
+        self._mlist.admin_immed_notify = True
+        self._mlist.respond_to_post_requests = False
+        path = resource_filename('mailman.chains.tests', 'issue144.eml')
+        with open(path, 'rb') as fp:
+            msg = mfb(fp.read())
+        msg.sender = 'anne@example.com'
+        process_chain(self._mlist, msg, {}, start_chain='hold')
+        # The postauth.txt message is now in the virgin queue awaiting
+        # delivery to the moderators.
+        items = get_queue_messages('virgin')
+        self.assertEqual(len(items), 1)
+        msgdata = items[0].msgdata
+        self.assertTrue(msgdata['tomoderators'])
+        self.assertEqual(msgdata['recipients'], {'test-owner@example.com'})
+        # Ensure that the subject looks correct in the postauth.txt.
+        msg = items[0].msg
+        value = None
+        for line in msg.get_payload(0).get_payload().splitlines():
+            if line.strip().startswith('Subject:'):
+                header, colon, value = line.partition(':')
+                break
+        self.assertEqual(value.lstrip(), 'Vi?enamjenski pi?tolj za vodu 8/1')
+        self.assertEqual(
+            msg['Subject'],
+            'test@example.com post from anne@example.com requires approval')
