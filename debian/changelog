@@ -1,3 +1,12 @@
+mailman3-core (3.0.2-1) unstable; urgency=low
+
+  * New upstream release
+   + Compatible with python3.5
+   + Ships previous patches
+  * Includes a basic init file
+
+ -- Pierre-Elliott Bécue <becue@crans.org>  Wed, 23 Mar 2016 03:43:01 +0100
+
 mailman3-core (3.0.0-1) unstable; urgency=low
 
   * Initial release (Closes: #799281)
