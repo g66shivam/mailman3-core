@@ -1,0 +1,22 @@
+From ad33cb53244253aaa257bd3208b36946e96ec679 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pierre-Elliott=20B=C3=A9cue?= <becue@crans.org>
+Date: Thu, 24 Mar 2016 20:50:42 +0100
+Subject: Ignores build directories when compiles documentation
+
+---
+ conf.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/conf.py b/conf.py
+index 07e0871..767d919 100644
+--- a/conf.py
++++ b/conf.py
+@@ -68,7 +68,7 @@ release = VERSION
+ 
+ # List of patterns, relative to source directory, that match files and
+ # directories to ignore when looking for source files.
+-exclude_patterns = ['_build', 'eggs']
++exclude_patterns = ['_build', 'eggs', '.pybuild', 'debian']
+ 
+ # The reST default role (used for this markup: `text`) to use for all documents.
+ #default_role = None
