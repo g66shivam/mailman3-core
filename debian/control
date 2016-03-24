@@ -5,7 +5,7 @@ Maintainer: Pierre-Elliott Bécue <becue@crans.org>
 Build-Depends: debhelper (>= 9),
                dh-systemd,
                python3-alembic,
-               python3 (>= 3.4),
+               python3,
                python3-falcon (>= 0.3rc1),
                python3-flufl.bounce,
                python3-flufl.i18n,
@@ -24,7 +24,7 @@ Build-Depends: debhelper (>= 9),
                python3-zope.interface
 Standards-Version: 3.9.7
 Homepage: http://www.list.org/
-X-Python3-Version: >= 3.4
+X-Python3-Version: 3.4
 Vcs-Browser: https://github.com/P-EB/mailman3-core
 Vcs-Git: https://github.com/P-EB/mailman3-core.git -b master
 
